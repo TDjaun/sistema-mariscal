@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { ENV } from '../env';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   cargando: boolean = false;
+  ENV=ENV
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -33,7 +35,7 @@ export class LoginComponent {
         return;
     }
 
-    this.http.post('http://localhost:3000/auth/login', {
+    this.http.post(ENV.HTTP+'/auth/login', {
       email: this.email,
       password: this.password
     }).subscribe({

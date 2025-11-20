@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { ENV } from '../../env';
 
 @Component({
   selector: 'app-usuarios',
@@ -19,6 +20,7 @@ export class UsuariosComponent implements OnInit {
   nuevoUsuario = { email: '', password: '' };
   archivoSeleccionado: File | null = null;
   cargando = false;
+  ENV=ENV
 
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
   private subs: Subscription[] = [];
@@ -37,7 +39,7 @@ export class UsuariosComponent implements OnInit {
     this.cargando = true;
     this.cdr.detectChanges();
 
-    const s = this.http.get('http://localhost:3000/auth/usuarios').subscribe({
+    const s = this.http.get(ENV.HTTP+'/auth/usuarios').subscribe({
       next: (res: any) => {
         this.usuarios = Array.isArray(res) ? res : [];
         this.cargando = false;
@@ -88,7 +90,7 @@ export class UsuariosComponent implements OnInit {
     }
 
     const s = this.http
-      .post('http://localhost:3000/auth/registrar-personal', this.nuevoUsuario)
+      .post('/auth/registrar-personal', this.nuevoUsuario)
       .subscribe({
         next: (created: any) => {
           if (created && created.id) {
@@ -120,7 +122,7 @@ export class UsuariosComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then(result => {
       if (result.isConfirmed) {
-        const s = this.http.delete(`http://localhost:3000/auth/usuarios/${id}`).subscribe({
+        const s = this.http.delete(ENV.HTTP+`/auth/usuarios/${id}`).subscribe({
           next: () => {
             Swal.fire('Eliminado', 'El usuario fue eliminado correctamente.', 'success');
             this.usuarios = this.usuarios.filter(u => u.id !== id);
@@ -142,7 +144,7 @@ export class UsuariosComponent implements OnInit {
     this.cdr.detectChanges();
 
     const s = this.http
-      .patch(`http://localhost:3000/auth/usuarios/${usuario.id}/estado`, { estado: nuevoEstado })
+      .patch(ENV.HTTP+`http:///auth/usuarios/${usuario.id}/estado`, { estado: nuevoEstado })
       .subscribe({
         next: () => {
           Swal.fire('Éxito', 'El estado se actualizó correctamente.', 'success');
@@ -184,7 +186,7 @@ export class UsuariosComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.archivoSeleccionado);
 
-    const s = this.http.post('http://localhost:3000/estudiantes/importar', formData).subscribe({
+    const s = this.http.post(ENV.HTTP+'/estudiantes/importar', formData).subscribe({
       next: () => {
         Swal.fire('✅ Éxito', 'Datos importados correctamente.', 'success');
 

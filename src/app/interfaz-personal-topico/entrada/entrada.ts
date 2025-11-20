@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { ENV } from '../../env';
 
 interface Medicamento {
   id?: string;
@@ -39,8 +40,8 @@ interface Categoria {
   styleUrls: ['./entrada.scss'],
 })
 export class Entrada implements OnInit {
-  apiUrl = 'http://localhost:3000/inventario';
-  apiCategorias = 'http://localhost:3000/categorias';
+  apiUrl = ENV.HTTP+'/inventario';
+  apiCategorias = ENV.HTTP+'/categorias';
 
   categorias: Categoria[] = [];
 
