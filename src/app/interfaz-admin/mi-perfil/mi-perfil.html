@@ -1,0 +1,187 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <div class="bg-white rounded-2xl shadow-xl p-8 flex flex-col md:flex-row items-center gap-6 border-t-4 border-blue-500">
+      
+      <div class="relative group">
+        <div class="bg-blue-600 text-white rounded-full w-24 h-24 flex items-center justify-center text-3xl font-bold ring-4 ring-blue-200">
+          MG
+        </div>
+        <button 
+          class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          title="Cambiar foto de perfil"
+        >
+          <i class="fa-solid fa-camera text-white text-xl"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 text-center md:text-left">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-1 flex items-center justify-center md:justify-start gap-2">
+          Dr. María González
+        </h1>
+        <p class="text-blue-600 font-semibold text-lg mb-4 flex items-center justify-center md:justify-start gap-2">
+          <i class="fa-solid fa-user-gear text-blue-500"></i> Administrador del Sistema
+        </p>
+
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-envelope text-gray-500 w-4"></i>
+            <span class="truncate">maria.gonzalez@topico.edu</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-phone text-gray-500 w-4"></i>
+            <span>+51 987 654 321</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days text-gray-500 w-4"></i>
+            <span>Última Sesión: Hoy</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-gray-500 w-4"></i>
+            <span>Registro: Dic 15, 2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-4 bg-blue-50 border-l-4 border-blue-400 rounded-xl text-blue-800 shadow-sm">
+        <p class="font-medium">
+            <i class="fa-solid fa-circle-info mr-2"></i> Actualiza tu información y haz clic en Guardar Cambios al final de la sección.
+        </p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3 border-b pb-3">
+        <i class="fa-solid fa-address-card text-blue-600"></i> Información de Contacto
+      </h2>
+
+      <form class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="nombre" class="text-sm font-medium text-gray-700 block mb-1">Nombre Completo (Título)</label>
+              <div class="relative">
+                <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="nombre"
+                  value="Dr. María González" 
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+              </div>
+            </div>
+            
+            <div>
+              <label for="usuario" class="text-sm font-medium text-gray-700 block mb-1">Usuario del Sistema</label>
+              <div class="relative">
+                <i class="fa-solid fa-user-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input 
+                  type="text" 
+                  id="usuario"
+                  value="admin001" 
+                  disabled
+                  class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
+                  title="Este campo no se puede editar"
+                >
+              </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="email" class="text-sm font-medium text-gray-700 block mb-1">Correo Electrónico</label>
+              <div class="relative">
+                <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input 
+                  type="email" 
+                  id="email"
+                  value="maria.gonzalez@topico.edu" 
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+              </div>
+            </div>
+
+            <div>
+              <label for="telefono" class="text-sm font-medium text-gray-700 block mb-1">Teléfono</label>
+              <div class="relative">
+                <i class="fa-solid fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input 
+                  type="tel" 
+                  id="telefono"
+                  value="+51 987 654 321" 
+                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+              </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end pt-4">
+          <button 
+            type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold transition shadow-md flex items-center gap-2 transform hover:scale-[1.02]"
+          >
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3 border-b pb-3">
+        <i class="fa-solid fa-lock text-red-600"></i> Seguridad y Acceso
+      </h2>
+
+      <form class="space-y-6">
+        <div>
+          <label for="current_password" class="text-sm font-medium text-gray-700 block mb-1">Contraseña Actual</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input 
+              type="password" 
+              id="current_password"
+              placeholder="Ingresa tu contraseña actual" 
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="new_password" class="text-sm font-medium text-gray-700 block mb-1">Nueva Contraseña</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input 
+                type="password" 
+                id="new_password"
+                placeholder="Mínimo 8 caracteres" 
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+              >
+            </div>
+          </div>
+          
+          <div>
+            <label for="confirm_password" class="text-sm font-medium text-gray-700 block mb-1">Confirmar Nueva Contraseña</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock-open absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input 
+                type="password" 
+                id="confirm_password"
+                placeholder="Confirma la nueva contraseña" 
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button 
+            type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-semibold transition shadow-md flex items-center gap-2 transform hover:scale-[1.02]"
+          >
+            <i class="fa-solid fa-shield-halved"></i> Actualizar Contraseña
+          </button>
+        </div>
+      </form>
+    </div>
+    
+  </div>
+</div>

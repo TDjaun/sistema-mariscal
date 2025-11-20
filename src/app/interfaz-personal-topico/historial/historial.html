@@ -1,0 +1,220 @@
+<div class="flex-1 overflow-y-auto p-10 bg-gray-50 h-screen">
+    <div class="max-w-7xl mx-auto">
+
+        <div class="mb-10 flex items-center gap-4 border-b border-gray-300 pb-4">
+            <i class="fa-solid fa-notes-medical text-6xl text-blue-700"></i>
+            <div>
+                <h1 class="text-4xl font-black text-gray-800 tracking-tight">
+                    Consulta de Historia Clínica Escolar
+                </h1>
+                <p class="text-gray-500 mt-1 text-lg">
+                    Accede al registro detallado de todas las atenciones médicas e incidencias.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-blue-600">
+            <h2 class="text-xl font-bold text-gray-700 flex items-center gap-3 mb-4">
+                <i class="fa-solid fa-filter text-blue-600"></i> Filtros de Búsqueda
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Buscar Estudiante (Nombre o DNI)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="text" 
+                            [(ngModel)]="searchQuery"
+                            placeholder="Ej: Sofia Mendoza o DNI 78901234"
+                            class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:ring-blue-500 focus:border-blue-500 transition text-sm"
+                            (keyup.enter)="buscarHistorial()"
+                            (ngModelChange)="buscarHistorial()" >
+                    </div>
+                </div>
+                
+                <div class="flex items-end">
+                    <button
+                        (click)="buscarHistorial()"
+                        [disabled]="isLoading"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200 font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-search"></i> {{ isLoading ? 'Buscando...' : 'Buscar Historial' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-700 flex items-center gap-3">
+                    <i class="fa-solid fa-table text-blue-700"></i> Resultados de Atenciones
+                </h2>
+                
+                <button
+                    (click)="exportarHistorial()"
+                    class="text-green-600 hover:text-green-700 font-semibold flex items-center gap-2 text-sm transition py-1 px-3 border border-green-300 rounded-lg" 
+                    [disabled]="historial.length === 0 || isLoading">
+                    <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-gray-600">
+                    <thead class="bg-gray-100 text-gray-700 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-6 py-3 text-left font-bold border-b w-36">Fecha/Hora</th>
+                            <th class="px-6 py-3 text-left font-bold border-b">Estudiante</th>
+                            <th class="px-6 py-3 text-left font-bold border-b w-24">Grado</th>
+                            <th class="px-6 py-3 text-center font-bold border-b w-24">Total</th>
+                            <th class="px-6 py-3 text-left font-bold border-b w-64">Síntomas Clave</th>
+                            <th class="px-6 py-3 text-left font-bold border-b w-32">Tipo</th>
+                            <th class="px-6 py-3 text-center font-bold border-b w-24">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr *ngIf="isLoading">
+                            <td colspan="7" class="px-6 py-10 text-center text-blue-500 font-semibold text-lg animate-pulse">
+                                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando historial...
+                            </td>
+                        </tr>
+                        <tr *ngIf="!isLoading && historial.length === 0">
+                            <td colspan="7" class="px-6 py-10 text-center text-gray-500 font-medium">
+                                <i class="fa-solid fa-clipboard-list mr-2"></i> No se encontraron atenciones médicas.
+                            </td>
+                        </tr>
+                        
+                        <tr *ngFor="let item of historial" class="hover:bg-blue-50 transition duration-150">
+                            <td class="px-6 py-4 text-xs font-mono text-gray-500">{{ item.fecha_atencion }}</td>
+                            <td class="px-6 py-4 font-semibold text-gray-900">{{ item.nombre_estudiante }}</td>
+                            <td class="px-6 py-4 text-sm">{{ item.grado_seccion }}</td>
+                            <!-- NUEVA CELDA: Total Atenciones -->
+                            <td class="px-6 py-4 text-center font-bold text-blue-600">
+                                {{ item.total_atenciones_estudiante || 1 }}
+                            </td>
+                            <td class="px-6 py-4 truncate text-sm" [title]="item.sintomas_reportados">{{ truncateSintomas(item.sintomas_reportados) }}</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                                    [ngClass]="getTipoBadgeClass(item.tipo_atencion)">
+                                    <i class="fa-solid fa-stethoscope mr-1"></i> {{ item.tipo_atencion }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button
+                                    (click)="verDetalle(item)"
+                                    class="text-blue-600 hover:text-blue-800 font-bold transition duration-200 flex items-center gap-1 justify-center mx-auto text-xs">
+                                    <i class="fa-solid fa-eye"></i> Ver Detalle
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end items-center text-sm">
+                <div class="flex space-x-2 font-medium">
+                    <button
+                        (click)="goToPage(currentPage - 1)"
+                        [disabled]="currentPage === 1"
+                        class="px-3 py-1.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-200 transition duration-200 flex items-center gap-1 disabled:opacity-50">
+                        <i class="fa-solid fa-chevron-left text-xs"></i> Anterior
+                    </button>
+                    <button
+                        (click)="goToPage(currentPage + 1)"
+                        [disabled]="historial.length < itemsPerPage"
+                        class="px-3 py-1.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-200 transition duration-200 flex items-center gap-1 disabled:opacity-50">
+                        Siguiente <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div *ngIf="mostrarDetalleModal && atencionSeleccionada" 
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-transform duration-300 scale-100">
+            
+            <div class="px-6 py-4 border-b bg-blue-50 flex justify-between items-center rounded-t-xl">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice text-blue-600"></i> Detalle de Atención Médica
+                </h3>
+                <button (click)="cerrarDetalle()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 max-h-96 overflow-y-auto space-y-4">
+                
+                <h4 class="text-lg font-bold text-blue-700 border-b pb-1">Información General</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-500 font-medium">Estudiante:</p>
+                        <p class="font-semibold text-gray-800">{{ atencionSeleccionada.nombre_estudiante }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 font-medium">Grado y Sección:</p>
+                        <p class="font-semibold text-gray-800">{{ atencionSeleccionada.grado_seccion }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 font-medium">Total de Atenciones:</p>
+                        <p class="font-bold text-blue-600 text-lg">{{ atencionSeleccionada.total_atenciones_estudiante || 1 }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 font-medium">Fecha/Hora de esta Atención:</p>
+                        <p class="font-semibold text-gray-800">{{ atencionSeleccionada.fecha_atencion }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 font-medium">Tipo de Atención:</p>
+                        <span class="font-semibold text-gray-800">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border"
+                                [ngClass]="getTipoBadgeClass(atencionSeleccionada.tipo_atencion)">
+                                {{ atencionSeleccionada.tipo_atencion }}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-bold text-blue-700 border-b pb-1 pt-4">Detalles Médicos</h4>
+                <div class="space-y-3 text-sm">
+                    
+                    <div>
+                        <p class="text-gray-600 font-medium mb-1 flex items-center gap-2"><i class="fa-solid fa-heart-pulse"></i> Síntomas Reportados:</p>
+                        <p class="bg-gray-50 p-3 rounded-lg border text-gray-700 whitespace-pre-wrap">{{ atencionSeleccionada.sintomas_reportados || '— Sin detalles —' }}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-gray-600 font-medium mb-1 flex items-center gap-2"><i class="fa-solid fa-stethoscope"></i> Diagnóstico:</p>
+                        <p class="bg-gray-50 p-3 rounded-lg border text-gray-700 whitespace-pre-wrap">{{ atencionSeleccionada.diagnostico || '— Sin detalles —' }}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-gray-600 font-medium mb-1 flex items-center gap-2"><i class="fa-solid fa-file-medical"></i> Tratamiento/Recomendaciones:</p>
+                        <p class="bg-gray-50 p-3 rounded-lg border text-gray-700 whitespace-pre-wrap">{{ atencionSeleccionada.tratamiento || '— Sin detalles —' }}</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-gray-600 font-medium mb-1 flex items-center gap-2"><i class="fa-solid fa-notes"></i> Observaciones:</p>
+                        <p class="bg-gray-50 p-3 rounded-lg border text-gray-700 whitespace-pre-wrap">{{ atencionSeleccionada.observaciones || '— Sin detalles —' }}</p>
+                    </div>
+                    
+                    <div *ngIf="atencionSeleccionada.medicamentos?.length">
+                        <p class="text-gray-600 font-medium mb-1 flex items-center gap-2"><i class="fa-solid fa-pills"></i> Medicamentos Recetados:</p>
+                        <ul class="list-disc list-inside bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-gray-700">
+                            <li *ngFor="let med of atencionSeleccionada.medicamentos" class="text-sm">
+                                {{ med.nombre }} (Dosis: {{ med.dosis }})
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t flex justify-end rounded-b-xl">
+                <button (click)="cerrarDetalle()"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg transition text-sm">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="flex h-screen overflow-hidden bg-gray-50">
+    <aside
+        class="w-72 bg-gradient-to-b from-green-100 via-green-200 to-green-300 text-gray-900 flex flex-col justify-between border-r border-green-400 shadow-2xl transition-all duration-300"
+    >
+        <div>
+            <div class="flex items-center gap-3 px-6 py-5 border-b border-green-400 bg-green-500/20 shadow-sm">
+                <i class="fa-solid fa-hospital text-green-700 text-4xl"></i>
+                <span class="text-xl font-extrabold text-green-900 leading-tight tracking-tight">
+                    TÓPICO ESCOLAR<br />
+                    <span class="text-sm font-semibold text-gray-600">Gestión Administrativa</span>
+                </span>
+            </div>
+
+            <nav class="mt-6 flex flex-col gap-1 px-4">
+                
+                <a
+                    routerLink="inicio"
+                    routerLinkActive="bg-green-700 text-white font-bold shadow-lg border-l-4 border-white"
+                    class="flex items-center px-5 py-3 rounded-lg text-lg text-green-800 hover:bg-green-300/70 transition-all duration-200"
+                >
+                    <i class="fa-solid fa-chart-line mr-4 text-2xl"></i>
+                    Inicio
+                </a>
+
+                <a
+                    routerLink="usuarios"
+                    routerLinkActive="bg-green-700 text-white font-bold shadow-lg border-l-4 border-white"
+                    class="flex items-center px-5 py-3 rounded-lg text-lg text-green-800 hover:bg-green-300/70 transition-all duration-200"
+                >
+                    <i class="fa-solid fa-users mr-4 text-2xl"></i>
+                    Usuarios
+                </a>
+
+                <a
+                    routerLink="inventario"
+                    routerLinkActive="bg-green-700 text-white font-bold shadow-lg border-l-4 border-white"
+                    class="flex items-center px-5 py-3 rounded-lg text-lg text-green-800 hover:bg-green-300/70 transition-all duration-200"
+                >
+                    <i class="fa-solid fa-pills mr-4 text-2xl"></i>
+                    Inventario
+                </a>
+
+                <a
+                    routerLink="reportes"
+                    routerLinkActive="bg-green-700 text-white font-bold shadow-lg border-l-4 border-white"
+                    class="flex items-center px-5 py-3 rounded-lg text-lg text-green-800 hover:bg-green-300/70 transition-all duration-200"
+                >
+                    <i class="fa-solid fa-file-lines mr-4 text-2xl"></i>
+                    Reportes
+                </a>
+                <!--
+                <a
+                    routerLink="mi-perfil"
+                    routerLinkActive="bg-green-700 text-white font-bold shadow-lg border-l-4 border-white"
+                    class="flex items-center px-5 py-3 rounded-lg text-lg text-green-800 hover:bg-green-300/70 transition-all duration-200"
+                >
+                    <i class="fa-solid fa-user-circle mr-4 text-2xl"></i>
+                    Mi Perfil
+                </a>
+                --> 
+            </nav>
+        </div>
+        
+        <div class="p-4 border-t border-green-400">
+            <button 
+            (click)="cerrarSesion()" 
+            class="w-full flex items-center justify-center px-5 py-2 text-lg text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all duration-200 font-semibold shadow-md"
+            >
+            <i class="fa-solid fa-sign-out-alt mr-3 text-xl"></i>
+            Cerrar Sesión
+        </button>
+
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header
+            class="bg-gradient-to-r from-green-50 to-green-200 px-8 py-4 flex items-center justify-between border-b border-green-300 shadow-md z-10"
+        >
+            <h1 class="text-3xl font-extrabold text-green-900 tracking-tight">
+                <i class="fa-solid fa-house-chimney mr-2 text-green-700"></i> Panel Principal
+            </h1>
+
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-green-100 transition">
+                    <i class="fa-solid fa-user-md text-green-800 text-2xl"></i>
+                    <span class="font-semibold text-green-900 text-lg">Dr. Admin</span>
+                    <i class="fa-solid fa-chevron-down text-green-600 text-xs"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 px-8 py-8 overflow-y-auto">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>  

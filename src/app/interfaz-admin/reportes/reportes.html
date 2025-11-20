@@ -1,0 +1,101 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<div class="p-8 bg-gray-50 min-h-screen font-sans">
+    <div class="mb-12">
+      <h1 class="text-4xl font-extrabold text-green-800 tracking-tight flex items-center gap-3">
+        <i class="fa-solid fa-file-invoice text-green-600 text-3xl"></i>
+        Generador de Reportes Analíticos
+      </h1>
+      <p class="text-gray-600 mt-2 text-lg max-w-3xl">
+        Utilice los botones a continuación para generar y descargar los reportes clave del sistema Tópico en formato PDF.
+      </p>
+      <div *ngIf="errorMessage()" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-md">
+          <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+          {{ errorMessage() }}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <div class="bg-white rounded-xl shadow-xl p-8 border-t-4 border-blue-500 flex flex-col justify-between hover:shadow-2xl transition duration-300">
+        <div class="flex items-start mb-6">
+          <i class="fa-solid fa-chart-pie text-4xl text-blue-600 mr-4 mt-1"></i>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Resumen Ejecutivo del Sistema</h2>
+            <p class="text-gray-500 text-sm mt-1">
+                Genera un informe completo sobre las métricas de rendimiento y uso del sistema.
+            </p>
+          </div>
+        </div>
+        <button 
+          (click)="descargarReporte('resumen-ejecutivo', 'Resumen_Ejecutivo_Topico.pdf')"
+          [disabled]="isLoading('resumen')"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 transition transform hover:scale-[1.01] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-spinner fa-spin text-xl" *ngIf="isLoading('resumen')"></i>
+          <i class="fa-solid fa-file-pdf text-xl" *ngIf="!isLoading('resumen')"></i>
+          {{ isLoading('resumen') ? 'Generando PDF...' : 'Descargar Resumen (PDF)' }}
+        </button>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-xl p-8 border-t-4 border-green-500 flex flex-col justify-between hover:shadow-2xl transition duration-300">
+        <div class="flex items-start mb-6">
+          <i class="fa-solid fa-user-doctor text-4xl text-green-600 mr-4 mt-1"></i>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Reporte de Atenciones Médicas</h2>
+            <p class="text-gray-500 text-sm mt-1">
+                Detalla las atenciones registradas, incluyendo diagnósticos, tratamientos y medicamentos.
+            </p>
+          </div>
+        </div>
+        <button 
+          (click)="descargarReporte('atenciones', 'Reporte_Atenciones.pdf')"
+          [disabled]="isLoading('atenciones')"
+          class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 transition transform hover:scale-[1.01] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-spinner fa-spin text-xl" *ngIf="isLoading('atenciones')"></i>
+          <i class="fa-solid fa-file-pdf text-xl" *ngIf="!isLoading('atenciones')"></i>
+          {{ isLoading('atenciones') ? 'Generando PDF...' : 'Descargar Atenciones (PDF)' }}
+        </button>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-xl p-8 border-t-4 border-purple-500 flex flex-col justify-between hover:shadow-2xl transition duration-300">
+        <div class="flex items-start mb-6">
+          <i class="fa-solid fa-capsules text-4xl text-purple-600 mr-4 mt-1"></i>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Reporte de Inventario de Medicamentos</h2>
+            <p class="text-gray-500 text-sm mt-1">
+                Proporciona información sobre el stock actual, alertas de bajo inventario y fechas de vencimiento.
+            </p>
+          </div>
+        </div>
+        <button 
+          (click)="descargarReporte('inventario', 'Reporte_Inventario.pdf')"
+          [disabled]="isLoading('inventario')"
+          class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 transition transform hover:scale-[1.01] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-spinner fa-spin text-xl" *ngIf="isLoading('inventario')"></i>
+          <i class="fa-solid fa-file-pdf text-xl" *ngIf="!isLoading('inventario')"></i>
+          {{ isLoading('inventario') ? 'Generando PDF...' : 'Descargar Inventario (PDF)' }}
+        </button>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-xl p-8 border-t-4 border-red-500 flex flex-col justify-between hover:shadow-2xl transition duration-300">
+        <div class="flex items-start mb-6">
+            <i class="fa-solid fa-chart-line text-4xl text-red-600 mr-4 mt-1"></i>
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">Reporte TOP de Atenciones y Análisis</h2>
+                <p class="text-gray-500 text-sm mt-1">
+                    Genera el ranking de estudiantes más atendidos, grados más frecuentes y síntomas principales.
+                </p>
+            </div>
+        </div>
+        <button 
+          (click)="descargarReporte('top-estudiantes', 'Reporte_TOP_Atenciones.pdf')"
+          [disabled]="isLoading('topico')"
+          class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 transition transform hover:scale-[1.01] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-spinner fa-spin text-xl" *ngIf="isLoading('topico')"></i>
+          <i class="fa-solid fa-file-pdf text-xl" *ngIf="!isLoading('topico')"></i>
+          {{ isLoading('topico') ? 'Generando PDF...' : 'Descargar Reporte TOP (PDF)' }}
+        </button>
+      </div>
+
+    </div>
+</div>

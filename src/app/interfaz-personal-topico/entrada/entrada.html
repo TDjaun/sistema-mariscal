@@ -1,0 +1,166 @@
+<div class="flex-1 overflow-y-auto p-10 bg-gray-100 h-screen">
+  <form (ngSubmit)="registrarMedicamento()" class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl p-10 space-y-10 border-t-8 border-cyan-600">
+
+    <div class="flex items-center gap-4 mb-8 border-b border-gray-200 pb-4">
+      <i class="fa-solid fa-box-medical text-5xl text-cyan-600"></i>
+      <div>
+        <h1 class="text-4xl font-extrabold text-gray-800">Registro de Entrada de Inventario</h1>
+        <p class="text-gray-600 mt-1 text-lg">
+          Control de ingreso de medicamentos y materiales, incluyendo lotes y fechas de vencimiento.
+        </p>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+        <i class="fa-solid fa-pills text-cyan-600"></i>
+        Identificación del Medicamento/Material
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Nombre del Producto</label>
+          <input [(ngModel)]="medicamento.nombre_producto" name="nombre_producto" type="text" placeholder="Ej: Paracetamol 500mg"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500" required>
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Categoría / Tipo</label>
+          <select [(ngModel)]="medicamento.categoria_id" name="categoria_id"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500" required>
+            <option value="">Seleccione una categoría</option>
+            <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Concentración/Dosis</label>
+          <input [(ngModel)]="medicamento.concentracion" name="concentracion" type="text" placeholder="Ej: 500mg, 5mg/ml"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Presentación</label>
+          <input [(ngModel)]="medicamento.presentacion" name="presentacion" type="text" placeholder="Ej: Tabletas, Frasco, Tubo..."
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-base font-bold text-gray-700 mb-2">Laboratorio/Fabricante</label>
+          <input [(ngModel)]="medicamento.laboratorio" name="laboratorio" type="text" placeholder="Nombre del laboratorio"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 border-t border-gray-200 pt-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+        <i class="fa-solid fa-calendar-check text-orange-600"></i>
+        Control de Stock y Caducidad
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-5 bg-orange-50 rounded-xl border border-orange-200">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Número de Lote</label>
+          <input [(ngModel)]="medicamento.lote" name="lote" type="text" placeholder="Lote del fabricante"
+            class="w-full border-2 border-orange-300 rounded-xl px-5 py-3 text-lg font-mono bg-white focus:ring-4 focus:ring-orange-200 focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Fecha de Vencimiento</label>
+          <input [(ngModel)]="medicamento.fecha_vencimiento" name="fecha_vencimiento" type="date"
+            class="w-full border-2 border-red-300 rounded-xl px-5 py-3 text-lg bg-white focus:ring-4 focus:ring-red-200 focus:border-red-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Fecha de Ingreso</label>
+          <input [(ngModel)]="medicamento.fecha_ingreso" name="fecha_ingreso" type="date"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-lg bg-white focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Cantidad Total Recibida</label>
+          <input [(ngModel)]="medicamento.cantidad_total" name="cantidad_total" type="number" placeholder="Ej: 50" min="1"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500" required>
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Unidad de Medida</label>
+          <input [(ngModel)]="medicamento.unidad_medida" name="unidad_medida" type="text" placeholder="Ej: frascos, tabletas, tubos..."
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Unidades por Contenedor</label>
+          <input [(ngModel)]="medicamento.unidades_por_contenedor" name="unidades_por_contenedor" type="number" placeholder="Ej: 10"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Condiciones de Almacenamiento</label>
+          <input [(ngModel)]="medicamento.condiciones_almacenamiento" name="condiciones_almacenamiento" type="text" placeholder="Ej: Temperatura ambiente, Refrigerado..."
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500">
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 border-t border-gray-200 pt-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+        <i class="fa-solid fa-truck-fast text-green-600"></i>
+        Información de Compra y Logística
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Proveedor / Donante</label>
+          <input [(ngModel)]="medicamento.proveedor" name="proveedor" type="text" placeholder="Nombre del proveedor o institución donante"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Número de Factura/Recibo</label>
+          <input [(ngModel)]="medicamento.factura_recibo" name="factura_recibo" type="text" placeholder="Número de documento de compra"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Costo Unitario (S/)</label>
+          <input [(ngModel)]="medicamento.costo_unitario" name="costo_unitario" type="number" step="0.01" placeholder="0.00"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Costo Total (S/)</label>
+          <input [(ngModel)]="medicamento.costo_total" name="costo_total" type="number" step="0.01" placeholder="0.00" readonly
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 bg-gray-100 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500">
+        </div>
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Moneda</label>
+          <select [(ngModel)]="medicamento.moneda" name="moneda"
+            class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500">
+            <option>Soles (PEN)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-base font-bold text-gray-700 mb-2">Observaciones</label>
+        <textarea [(ngModel)]="medicamento.observaciones" name="observaciones" rows="3"
+          placeholder="Observaciones adicionales sobre la recepción, calidad o proveedor..."
+          class="w-full border-2 border-gray-300 rounded-xl px-5 py-3 text-base focus:ring-4 focus:ring-green-200 focus:border-green-500"></textarea>
+      </div>
+    </div>
+
+    <div class="flex gap-6 pt-8 border-t border-gray-200">
+      <button type="submit"
+        class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-4 rounded-xl font-extrabold transition text-lg shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Registrar y Actualizar Inventario
+      </button>
+      <button 
+      type="button" 
+      (click)="limpiarFormulario(); mostrarAlertaLimpieza();"
+      class="flex-1 border-2 border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-bold transition text-lg flex items-center justify-center gap-2">
+      <i class="fa-solid fa-rotate-left"></i> Limpiar Formulario
+    </button>
+    </div>
+  </form>
+</div>

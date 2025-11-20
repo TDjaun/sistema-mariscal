@@ -1,0 +1,262 @@
+<div class="flex-1 overflow-y-auto p-10 bg-gray-100 h-screen">
+  <div class="max-w-6xl mx-auto space-y-8">
+
+    <div class="flex items-center gap-4 border-b border-red-200 pb-4">
+      <i class="fa-solid fa-triangle-exclamation text-5xl text-red-600"></i>
+      <div>
+        <h1 class="text-4xl font-extrabold text-gray-800">Registro de Incidencia Crítica</h1>
+        <p class="text-gray-600 mt-1 text-lg">
+          Documentación rápida y detallada de cualquier accidente o emergencia escolar.
+        </p>
+      </div>
+    </div>
+
+    <form (ngSubmit)="registrarIncidencia()" class="bg-white rounded-2xl shadow-xl p-10 space-y-10 border-t-8 border-red-500">
+      
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+          <i class="fa-solid fa-calendar-day text-blue-600"></i>
+          Datos del Incidente
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          
+          <div class="md:col-span-2">
+            <label class="block text-sm font-bold text-gray-700 mb-2">Fecha y Hora de Ocurrencia</label>
+            <input
+              type="datetime-local"
+              [(ngModel)]="incidenciaData.fechaHoraOcurrencia"
+              name="fechaHoraOcurrencia"
+              required
+              class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          
+          <div class="md:col-span-2">
+            <label class="block text-sm font-bold text-gray-700 mb-2">Tipo de Incidencia</label>
+            <select
+              [(ngModel)]="incidenciaData.tipoIncidencia"
+              name="tipoIncidencia"
+              required
+              class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option>Caída / Golpe</option>
+              <option>Problema respiratorio / Asma</option>
+              <option>Alergia / Reacción</option>
+              <option>Accidente en el patio/deportes</option>
+              <option>Intoxicación</option>
+              <option>Fractura / Luxación</option>
+              <option>Otro (Especificar en descripción)</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-4">
+            <label class="block text-sm font-bold text-gray-700 mb-2">Estudiante Afectado (Buscar por Nombre/DNI)</label>
+            <div class="relative flex items-center">
+              <i class="fa-solid fa-user-injured absolute left-4 text-gray-400"></i>
+              <input 
+                type="text" 
+                placeholder="Buscar y seleccionar estudiante (Ej: DNI 74859632)"
+                [(ngModel)]="searchQuery"
+                name="searchQuery"
+                [disabled]="isSearching"
+                class="w-full border-2 border-gray-300 rounded-xl pl-12 pr-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              >
+              <button 
+                type="button" 
+                (click)="buscarEstudiante()"
+                [disabled]="isSearching"
+                class="bg-blue-600 text-white px-4 py-3 ml-2 rounded-xl hover:bg-blue-700 transition disabled:opacity-50">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              </button>
+            </div>
+            <p class="text-sm mt-1 font-semibold"
+               [ngClass]="{'text-green-600': estudianteSeleccionado, 'text-red-600': !estudianteSeleccionado}">
+              Estudiante seleccionado: {{ estudianteSeleccionadoDisplay }}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Ubicación del Incidente</label>
+            <select
+              [(ngModel)]="incidenciaData.ubicacionIncidente"
+              name="ubicacionIncidente"
+              required
+              class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option>Patio de recreo</option>
+              <option>Aula de clases</option>
+              <option>Cancha deportiva</option>
+              <option>Comedor</option>
+              <option>Pasillos</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Reportado por</label>
+            <input
+                type="text"
+                placeholder="Nombre del docente o personal que reporta"
+                [(ngModel)]="incidenciaData.reportadoPor"
+                name="reportadoPor"
+                required
+                class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200"></div>
+
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+          <i class="fa-solid fa-chart-simple text-orange-600"></i>
+          Detalle y Severidad
+        </h2>
+
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-3">Nivel de Severidad</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <label class="flex items-start p-5 border-2 border-green-300 bg-green-50 rounded-xl hover:shadow-lg transition cursor-pointer">
+              <input type="radio" 
+                     [(ngModel)]="incidenciaData.nivelSeveridad" 
+                     value="Baja" 
+                     name="nivelSeveridad" 
+                     class="mt-1 mr-4 text-green-600 focus:ring-green-600 w-5 h-5">
+              <div>
+                <span class="font-bold text-lg text-green-800">Baja (Menor)</span>
+                <p class="text-sm text-gray-700 mt-1">Incidente resuelto en sitio. Pequeñas heridas, sin compromiso vital.</p>
+              </div>
+            </label>
+            <label class="flex items-start p-5 border-2 border-yellow-300 bg-yellow-50 rounded-xl hover:shadow-lg transition cursor-pointer">
+              <input type="radio" 
+                     [(ngModel)]="incidenciaData.nivelSeveridad" 
+                     value="Media" 
+                     name="nivelSeveridad" 
+                     class="mt-1 mr-4 text-yellow-600 focus:ring-yellow-600 w-5 h-5">
+              <div>
+                <span class="font-bold text-lg text-yellow-800">Media (Requiere Supervisión)</span>
+                <p class="text-sm text-gray-700 mt-1">Necesita seguimiento médico. Posible traslado con padres.</p>
+              </div>
+            </label>
+            <label class="flex items-start p-5 border-2 border-red-300 bg-red-50 rounded-xl hover:shadow-lg transition cursor-pointer">
+              <input type="radio" 
+                     [(ngModel)]="incidenciaData.nivelSeveridad" 
+                     value="Alta" 
+                     name="nivelSeveridad" 
+                     class="mt-1 mr-4 text-red-600 focus:ring-red-600 w-5 h-5">
+              <div>
+                <span class="font-bold text-lg text-red-800">Alta (Emergencia)</span>
+                <p class="text-sm text-gray-700 mt-1">Emergencia crítica. Traslado inmediato a centro médico.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">Descripción Detallada del Incidente</label>
+          <textarea
+            rows="5"
+            placeholder="Describa el evento, la causa, las personas involucradas y la condición inicial del afectado..."
+            [(ngModel)]="incidenciaData.descripcionDetallada"
+            name="descripcionDetallada"
+            required
+            class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                   focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"></textarea>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-200"></div>
+
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3 border-b pb-3">
+          <i class="fa-solid fa-hand-holding-medical text-green-600"></i>
+          Acciones y Seguimiento
+        </h2>
+        
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">Primeros Auxilios Aplicados</label>
+          <textarea
+            rows="4"
+            placeholder="Describa detalladamente las medidas aplicadas, medicamentos menores administrados (si aplica) y la reacción del estudiante..."
+            [(ngModel)]="incidenciaData.primerosAuxiliosAplicados"
+            name="primerosAuxiliosAplicados"
+            class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Notificación a Padres / Apoderados</label>
+            <select
+              [(ngModel)]="incidenciaData.notificacionPadres"
+              name="notificacionPadres"
+              required
+              class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option>Sí, inmediatamente</option>
+              <option>Sí, en el plazo de 1 hora</option>
+              <option>No, no fue necesario (Incidente menor)</option>
+              <option>No, no se pudo contactar (Pendiente)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-2">Traslado a Centro Médico</label>
+            <select
+              [(ngModel)]="incidenciaData.trasladoCentroMedico"
+              name="trasladoCentroMedico"
+              required
+              class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-base
+                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option>No, se quedó en la escuela</option>
+              <option>Sí, trasladado por los padres</option>
+              <option>Sí, en ambulancia (Llamada al 106)</option>
+              <option>Sí, por personal de la escuela</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-200"></div>
+
+      <div class="space-y-4 bg-gray-50 p-6 rounded-xl border-l-4 border-red-500 shadow-inner">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+          <i class="fa-solid fa-phone-volume text-red-600"></i>
+          ☎️ Contactos de Emergencia (¡Llamar ahora!)
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="bg-red-100 p-4 rounded-lg flex flex-col items-center">
+            <span class="font-semibold text-red-800 text-sm">Ambulancia / SAMU</span>
+            <span class="font-extrabold text-red-700 text-3xl mt-1">106</span>
+          </div>
+          <div class="bg-orange-100 p-4 rounded-lg flex flex-col items-center">
+            <span class="font-semibold text-orange-800 text-sm">Bomberos</span>
+            <span class="font-extrabold text-orange-700 text-3xl mt-1">(066) 315827</span>
+          </div>
+          <div class="bg-blue-100 p-4 rounded-lg md:col-span-2">
+            <span class="font-semibold text-blue-800 text-sm">Hospital / Centro de Salud</span>
+            <p class="text-base text-blue-800 font-bold mt-1">Hospital Regional de Ayacucho - Huamanga</p>
+            <p class="text-sm text-gray-700">(066) 309180 - Ubicado a 10 min</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-6 border-t pt-8">
+        <button
+          type="submit"
+          class="flex-1 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-extrabold transition text-lg shadow-lg shadow-red-500/30 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Incidencia
+        </button>
+        <button
+          type="button"
+          (click)="limpiarFormulario()"
+          class="flex-1 border-2 border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-bold transition text-lg flex items-center justify-center gap-2">
+          <i class="fa-solid fa-eraser"></i> Limpiar y Reiniciar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

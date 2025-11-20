@@ -1,0 +1,218 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+    <div>
+      <h1 class="text-4xl font-extrabold text-green-800 tracking-tight flex items-center gap-3">
+        <i class="fa-solid fa-warehouse text-green-600 text-3xl"></i>
+        Gestión de Inventario
+      </h1>
+      <p class="text-gray-600 mt-2 text-lg max-w-2xl">
+        Controla las categorías y medicamentos registrados en el tópico escolar.
+      </p>
+    </div>
+
+    <button
+      (click)="abrirModal()"
+      class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-[1.02] flex items-center gap-2 mt-4 sm:mt-0"
+    >
+      <i class="fa-solid fa-plus text-lg"></i>
+      Nueva Categoría
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-green-500 flex items-center">
+      <i class="fa-solid fa-layer-group text-4xl text-green-600 mr-4"></i>
+      <div>
+        <p class="text-3xl font-bold text-gray-900">{{ totalCategorias }}</p>
+        <p class="text-gray-600 font-medium">Categorías</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-blue-500 flex items-center">
+      <i class="fa-solid fa-pills text-4xl text-blue-600 mr-4"></i>
+      <div>
+        <p class="text-3xl font-bold text-gray-900">{{ totalMedicamentos }}</p>
+        <p class="text-gray-600 font-medium">Medicamentos Totales</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-yellow-500 flex items-center">
+      <i class="fa-solid fa-triangle-exclamation text-4xl text-yellow-500 mr-4"></i>
+      <div>
+        <p class="text-3xl font-bold text-gray-900">{{ stockBajo }}</p>
+        <p class="text-gray-600 font-medium">Stock Bajo</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-red-500 flex items-center">
+      <i class="fa-solid fa-clock-rotate-left text-4xl text-red-600 mr-4"></i>
+      <div>
+        <p class="text-3xl font-bold text-gray-900">{{ proximosAVencer }}</p>
+        <p class="text-gray-600 font-medium">Próximos a Vencer</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-lg overflow-x-auto border border-gray-200 mb-10">
+    <table class="min-w-full">
+      <thead class="bg-green-100 text-green-800">
+        <tr>
+          <th class="py-3 px-4 text-left">Medicamento</th>
+          <th class="py-3 px-4 text-left">Categoría</th>
+          <th class="py-3 px-4 text-left">Stock</th>
+          <th class="py-3 px-4 text-left">Vencimiento</th>
+          <th class="py-3 px-4 text-left">Proveedor</th>
+          <th class="py-3 px-4 text-center">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let med of medicamentos"
+          class="border-b hover:bg-green-50 transition"
+        >
+          <td class="py-3 px-4 font-semibold text-gray-800">
+            {{ med.nombre_producto }}
+          </td>
+          <td class="py-3 px-4 text-gray-600">
+            {{ obtenerNombreCategoria(med.categoria_id) }}
+          </td>
+          <td class="py-3 px-4">
+            <span
+              [ngClass]="{
+                'text-green-600': med.cantidad_total >= 10,
+                'text-red-500 font-semibold': med.cantidad_total < 10
+              }"
+            >
+              <i
+                class="fa-solid"
+                [ngClass]="{
+                  'fa-circle-check': med.cantidad_total >= 10,
+                  'fa-triangle-exclamation': med.cantidad_total < 10
+                }"
+              ></i>
+              {{ med.cantidad_total }} {{ med.unidad_medida }}
+            </span>
+          </td>
+          <td
+            class="py-3 px-4"
+            [ngClass]="{
+              'text-gray-600': !med.fecha_vencimiento,
+              'text-red-500 font-semibold': diasParaVencer(med.fecha_vencimiento) <= 30
+            }"
+          >
+            {{ med.fecha_vencimiento | date: 'd/M/yyyy' }}
+          </td>
+          <td class="py-3 px-4 text-gray-700">{{ med.proveedor || '—' }}</td>
+          <td class="py-3 px-4 text-center">
+            <span
+              class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold text-xs"
+              >Activo</span
+            >
+          </td>
+        </tr>
+
+        <tr *ngIf="medicamentos.length === 0">
+          <td colspan="6" class="text-center py-6 text-gray-500">
+            No hay medicamentos registrados.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabla de Categorías -->
+  <div class="bg-white rounded-2xl shadow-lg overflow-x-auto border border-gray-200">
+    <table class="min-w-full">
+      <thead class="bg-green-100 text-green-800">
+        <tr>
+          <th class="py-3 px-4 text-left">Nombre</th>
+          <th class="py-3 px-4 text-left">Descripción</th>
+          <th class="py-3 px-4 text-center">Estado</th>
+          <th class="py-3 px-4 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categorias" class="border-b hover:bg-green-50 transition">
+          <td class="py-3 px-4 font-semibold text-gray-800">{{ cat.nombre }}</td>
+          <td class="py-3 px-4 text-gray-600">{{ cat.descripcion }}</td>
+          <td class="py-3 px-4 text-center">
+            <button
+              (click)="cambiarEstado(cat)"
+              class="px-3 py-1 rounded-full font-bold text-xs"
+              [ngClass]="{
+                'bg-green-100 text-green-700': cat.estado,
+                'bg-red-100 text-red-700': !cat.estado
+              }"
+            >
+              {{ cat.estado ? 'Activo' : 'Inactivo' }}
+            </button>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <button class="text-blue-600 hover:text-blue-800 mr-3" (click)="abrirModal(true, cat)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="text-red-600 hover:text-red-800" (click)="eliminarCategoria(cat.id!)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="categorias.length === 0">
+          <td colspan="4" class="text-center py-6 text-gray-500">
+            No se encontraron categorías.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div
+  *ngIf="modalAbierto"
+  class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+>
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
+    <h2 class="text-2xl font-bold mb-4 text-green-700 flex items-center gap-2">
+      <i class="fa-solid" [ngClass]="editando ? 'fa-pen' : 'fa-plus'"></i>
+      {{ editando ? 'Editar Categoría' : 'Nueva Categoría' }}
+    </h2>
+
+    <form (ngSubmit)="guardarCategoria()" class="space-y-4">
+      <div>
+        <label class="font-semibold text-gray-700">Nombre</label>
+        <input
+          [(ngModel)]="categoriaActual.nombre"
+          name="nombre"
+          type="text"
+          class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-green-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="font-semibold text-gray-700">Descripción</label>
+        <textarea
+          [(ngModel)]="categoriaActual.descripcion"
+          name="descripcion"
+          class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-green-500"
+        ></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="px-5 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-semibold"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+        >
+          {{ editando ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

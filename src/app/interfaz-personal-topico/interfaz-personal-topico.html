@@ -1,0 +1,134 @@
+<div class="flex h-screen bg-gray-100">
+
+  <div class="bg-blue-900 text-white w-64 flex flex-col shadow-2xl">
+    
+    <div class="p-6 border-b border-blue-800">
+      <h1 class="text-2xl font-extrabold text-green-400 flex items-center gap-2">
+        <i class="fa-solid fa-notes-medical text-xl"></i> TÓPICO ESCOLAR
+      </h1>
+      <p class="text-blue-200 text-sm mt-1">Panel de Personal Médico</p>
+    </div>
+
+    <div class="p-4 flex-1 overflow-y-auto">
+      <h2 class="text-blue-300 text-xs font-bold uppercase tracking-wider mb-3">
+        Funcionalidades Principales
+      </h2>
+      <nav class="space-y-1">
+        
+        <a
+          routerLink="home"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-blue-100 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-home w-5 mr-4 text-lg"></i>
+          Inicio (Dashboard)
+        </a>
+
+        <a
+          routerLink="atencion"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-blue-100 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-stethoscope w-5 mr-4 text-lg"></i>
+          Registrar Atención
+        </a>
+
+        <a
+          routerLink="historial"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-blue-100 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-history w-5 mr-4 text-lg"></i>
+          Consultar Historial
+        </a>
+
+        <a
+          routerLink="incidencia"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-red-300 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-exclamation-triangle w-5 mr-4 text-lg"></i>
+          Registrar Incidentes
+        </a>
+        
+        <div class="border-t border-blue-800 my-4 pt-4">
+            <h2 class="text-blue-300 text-xs font-bold uppercase tracking-wider mb-3">
+                Inventario
+            </h2>
+        </div>
+        
+        <a
+          routerLink="entrada"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-blue-100 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-box w-5 mr-4 text-lg"></i>
+          Gestión de Inventario
+        </a>
+
+        <a
+          *ngIf="false" routerLink="reportes-user"
+          routerLinkActive="bg-blue-800 text-white font-semibold border-l-4 border-green-400"
+          class="flex items-center px-3 py-3 rounded-lg text-blue-100 hover:bg-blue-800/70 transition duration-200"
+        >
+          <i class="fas fa-chart-line w-5 mr-4 text-lg"></i>
+          Generar Reportes
+        </a>
+
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-blue-800">
+      <!--
+      <a 
+        routerLink="perfil-user"
+        class="flex items-center hover:bg-blue-800/50 p-2 rounded-lg transition"
+      >
+        <div class="bg-green-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold text-sm mr-3">
+          DR
+        </div>
+        <div>
+          <p class="text-white font-semibold">Dra. R. (Tópico)</p>
+          <p class="text-blue-200 text-xs">Ver Mi Perfil</p>
+        </div>
+      </a>
+       -->
+        <button 
+          (click)="cerrarSesion()" 
+          class="w-full flex items-center justify-center px-5 py-2 text-lg text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all duration-200 font-semibold shadow-md"
+          >
+          <i class="fa-solid fa-sign-out-alt mr-3 text-xl"></i>
+          Cerrar Sesión
+        </button>
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col">
+    
+    <header class="bg-white p-4 shadow-md border-b border-gray-200 sticky top-0 z-10">
+      <div class="flex justify-between items-center">
+        
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800">Panel de Tópico</h2> 
+          <p class="text-gray-500 text-sm">Gestiona atenciones, inventario y reportes del día.</p>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <button class="flex items-center space-x-3 group p-2 rounded-xl hover:bg-gray-100 transition">
+            <div class="text-right hidden sm:block">
+              <p class="font-semibold text-gray-800">Dra. Rodríguez</p>
+              <p class="text-gray-500 text-sm">Personal de Tópico</p>
+            </div>
+            <div class="bg-green-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold text-sm">
+              DR
+            </div>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

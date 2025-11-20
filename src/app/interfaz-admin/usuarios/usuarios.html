@@ -1,0 +1,233 @@
+<div class="p-8 bg-gray-100 min-h-screen font-sans">
+  <header
+    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 p-6 bg-white rounded-xl shadow-lg"
+  >
+    <div>
+      <h1 class="text-3xl font-extrabold text-indigo-700 flex items-center mb-2">
+        <i class="fas fa-users mr-3 text-4xl"></i> Gestión de Usuarios
+      </h1>
+      <p class="text-gray-600 text-sm max-w-lg">
+        Administra, visualiza y gestiona las cuentas de usuario. Utiliza las
+        herramientas de importación y exportación para el manejo masivo de
+        datos.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
+      <button
+        (click)="abrirModal()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center text-sm font-semibold"
+      >
+        <i class="fas fa-user-plus mr-2"></i> Agregar Usuario
+      </button>
+
+      <button
+        (click)="abrirModalImportar()"
+        class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center text-sm font-semibold"
+      >
+        <i class="fas fa-file-import mr-2"></i> Importar Excel
+      </button>
+
+      <button
+        (click)="exportarExcel()"
+        class="bg-amber-500 hover:bg-amber-600 text-gray-900 px-5 py-2 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center text-sm font-semibold"
+      >
+        <i class="fas fa-file-export mr-2"></i> Exportar Excel
+      </button>
+    </div>
+  </header>
+
+  <div
+    *ngIf="cargando"
+    class="text-center text-indigo-600 py-12 bg-white rounded-xl shadow-md mt-6"
+  >
+    <i class="fas fa-spinner fa-spin mr-2 text-xl"></i> Cargando usuarios...
+  </div>
+
+  <div *ngIf="!cargando && usuarios.length > 0" class="mt-6">
+    <table
+      class="w-full border-collapse bg-white shadow-xl rounded-xl overflow-hidden"
+    >
+      <thead class="bg-indigo-600 text-white">
+        <tr>
+          <th class="py-4 px-6 text-left">#</th>
+          <th class="py-4 px-6 text-left">
+            Correo <i class="fas fa-envelope ml-1"></i>
+          </th>
+          <th class="py-4 px-6 text-center">
+            Estado <i class="fas fa-check-circle ml-1"></i>
+          </th>
+          <th class="py-4 px-6 text-center">
+            Acciones <i class="fas fa-cogs ml-1"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let usuario of usuarios; index as i"
+          class="hover:bg-indigo-50 border-b border-gray-100 transition duration-150"
+        >
+          <td class="py-3 px-6 text-gray-600">{{ i + 1 }}</td>
+          <td class="py-3 px-6 font-medium text-gray-800">
+            {{ usuario.email }}
+          </td>
+          <td class="py-3 px-6 text-center">
+            <span
+              [ngClass]="{
+                'bg-emerald-100 text-emerald-700': usuario.estado,
+                'bg-red-100 text-red-700': !usuario.estado
+              }"
+              class="px-3 py-1 rounded-full text-xs font-bold inline-flex items-center"
+            >
+              <i
+                class="mr-1"
+                [ngClass]="usuario.estado ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"
+              ></i>
+              {{ usuario.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="py-3 px-6 text-center space-x-2">
+            <button
+              (click)="cambiarEstado(usuario)"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition duration-150 shadow-sm flex-shrink-0"
+              title="Cambiar Estado"
+            >
+              <i class="fas fa-sync-alt"></i>
+            </button>
+            <button
+              (click)="eliminarUsuario(usuario.id)"
+              class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition duration-150 shadow-sm flex-shrink-0"
+              title="Eliminar Usuario"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    *ngIf="!cargando && usuarios.length === 0"
+    class="text-center text-gray-500 mt-12 py-10 bg-white rounded-xl shadow-md"
+  >
+    <i class="fas fa-exclamation-circle text-4xl mb-3 text-red-400"></i>
+    <p class="text-lg">No hay usuarios registrados.</p>
+  </div>
+
+  <div
+    *ngIf="modalAbierto"
+    class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100"
+    >
+      <h2 class="text-2xl font-bold mb-6 text-indigo-700 flex items-center">
+        <i class="fas fa-user-plus mr-3"></i> Nuevo Usuario
+      </h2>
+
+      <!-- Correo -->
+      <label class="block mb-2 text-gray-700 font-medium">Correo:</label>
+      <div class="relative mb-4">
+        <i
+          class="fas fa-at absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        ></i>
+        <input
+          [(ngModel)]="nuevoUsuario.email"
+          type="email"
+          placeholder="ejemplo@dominio.com"
+          class="border border-gray-300 rounded-lg w-full pl-10 pr-4 py-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150"
+        />
+      </div>
+
+      <label class="block mb-2 text-gray-700 font-medium">Contraseña:</label>
+      <div class="relative mb-6">
+        <i
+          class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        ></i>
+        <input
+          [(ngModel)]="nuevoUsuario.password"
+          type="password"
+          placeholder="••••••••"
+          class="border border-gray-300 rounded-lg w-full pl-10 pr-4 py-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150"
+        />
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button
+          (click)="cerrarModal()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg font-semibold transition duration-150"
+        >
+          <i class="fas fa-times mr-1"></i> Cancelar
+        </button>
+        <button
+          (click)="guardarUsuario()"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-semibold transition duration-150"
+        >
+          <i class="fas fa-save mr-1"></i> Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="modalImportar"
+    class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 border-t-4 border-emerald-500"
+    >
+      <h2 class="text-2xl font-bold mb-6 text-emerald-700 flex items-center">
+        <i class="fas fa-cloud-upload-alt mr-3 text-3xl"></i> Importar Datos
+        Masivos
+      </h2>
+      <p class="text-gray-600 mb-6 text-sm">
+        Sube tu archivo de Excel (.xlsx, .xls) para la importación masiva de
+        usuarios. Asegúrate de que el formato de las columnas sea el correcto.
+      </p>
+
+      <div
+        class="border-2 border-dashed border-emerald-300 bg-emerald-50 p-8 rounded-lg text-center mb-6 hover:bg-emerald-100 transition duration-200"
+      >
+        <i class="fas fa-file-excel text-5xl text-emerald-500 mb-3"></i>
+        <p class="text-gray-700 font-medium mb-3">
+          Selecciona tu archivo Excel
+        </p>
+
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          accept=".xlsx, .xls"
+          class="block mx-auto mt-3 border border-emerald-400 rounded-lg px-4 py-2 cursor-pointer text-sm text-gray-700 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400"
+        />
+
+        <p class="text-xs text-gray-500 mt-2">
+          Formatos aceptados: .xlsx, .xls
+        </p>
+
+        <div *ngIf="archivoSeleccionado" class="mt-3 text-emerald-700 text-sm">
+          <i class="fas fa-check-circle mr-2"></i> Archivo seleccionado:
+          <strong>{{ archivoSeleccionado.name }}</strong>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button
+          (click)="cerrarModalImportar()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg font-semibold transition duration-150"
+        >
+          <i class="fas fa-times mr-1"></i> Cancelar
+        </button>
+        <button
+          (click)="importarDatos()"
+          [class.opacity-60]="!archivoSeleccionado"
+          [disabled]="!archivoSeleccionado"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-semibold transition duration-150"
+        >
+          <i class="fas fa-upload mr-1"></i> Importar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

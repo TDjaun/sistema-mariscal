@@ -1,0 +1,224 @@
+<div class="flex-1 overflow-y-auto p-10 bg-gray-50 h-screen">
+
+    <div class="flex items-center gap-5 mb-10 max-w-6xl mx-auto">
+      <i class="fa-solid fa-user-nurse text-5xl text-blue-700"></i>
+      <h1 class="text-4xl font-extrabold text-gray-800">Registrar Nueva Atención</h1>
+    </div>
+  
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl p-10 space-y-10 border-t-8 border-blue-600">
+      
+      <div class="space-y-8">
+        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-4 border-b pb-4">
+          <i class="fa-solid fa-user-tag text-blue-600 text-2xl"></i>
+          Identificación del Paciente
+        </h2>
+  
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="md:col-span-4">
+            <label class="block text-base font-bold text-gray-700 mb-2">Buscar Estudiante (DNI o Nombre)</label>
+            <div class="relative flex items-center">
+              <i class="fa-solid fa-magnifying-glass absolute left-5 text-gray-400 text-lg"></i>
+              <input 
+                type="text" 
+                placeholder="Ej: Juan Pérez o DNI 12345678"
+                class="w-full border-2 border-gray-300 rounded-xl pl-14 pr-6 py-4 text-lg focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition"
+                [(ngModel)]="queryEstudiante"
+                (keyup.enter)="buscarEstudiante()"
+              >
+              <button 
+                class="bg-blue-600 text-white px-6 py-3 ml-3 rounded-xl hover:bg-blue-700 transition font-semibold text-base"
+                (click)="buscarEstudiante()"
+              >
+                <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> Buscar
+              </button>
+            </div>
+            <p *ngIf="busquedaError" class="text-red-500 mt-2 font-semibold">{{ busquedaError }}</p>
+            <p *ngIf="estudianteSeleccionado" class="text-green-600 mt-2 font-semibold">
+              ✅ Estudiante encontrado: {{ estudianteSeleccionado.nombres }} {{ estudianteSeleccionado.apellidos }} (DNI: {{ estudianteSeleccionado.dni }})
+            </p>
+          </div>
+  
+          <div>
+            <label class="block text-base font-bold text-gray-700 mb-2">Grado</label>
+            <input 
+              type="text" 
+              value="{{ estudianteSeleccionado?.grado || 'Pendiente' }}" 
+              disabled
+              class="w-full border border-gray-200 rounded-xl px-5 py-3 bg-gray-100 text-gray-600 cursor-not-allowed text-base">
+          </div>
+          <div>
+            <label class="block text-base font-bold text-gray-700 mb-2">Sección</label>
+            <input 
+              type="text" 
+              value="{{ estudianteSeleccionado?.seccion || 'Pendiente' }}" 
+              disabled
+              class="w-full border border-gray-200 rounded-xl px-5 py-3 bg-gray-100 text-gray-600 cursor-not-allowed text-base">
+          </div>
+          <div class="md:col-span-2">
+              <label class="block text-base font-bold text-gray-700 mb-2">Nombre Completo</label>
+              <input 
+                type="text" 
+                value="{{ estudianteSeleccionado ? (estudianteSeleccionado.nombres + ' ' + estudianteSeleccionado.apellidos) : 'No seleccionado' }}" 
+                disabled
+                class="w-full border border-gray-200 rounded-xl px-5 py-3 bg-gray-100 text-gray-600 cursor-not-allowed text-base">
+            </div>
+          </div>
+      </div>
+  
+      <div class="border-t border-gray-200"></div>
+      
+      <div class="space-y-8">
+        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-4 border-b pb-4">
+          <i class="fa-solid fa-file-waveform text-green-600 text-2xl"></i>
+          Detalle Clínico de la Atención
+        </h2>
+  
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label class="block text-base font-bold text-gray-700 mb-2">Fecha y Hora de la Atención</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="atencionData.fecha_hora_atencion"
+              class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500">
+          </div>
+          <div>
+            <label class="block text-base font-bold text-gray-700 mb-2">Tipo de Atención</label>
+            <select
+              [(ngModel)]="atencionData.tipo_atencion"
+              class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500">
+              <option>Consulta general</option>
+              <option>Seguimiento</option>
+            </select>
+          </div>
+        </div>
+  
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Síntomas Reportados / Motivo de Consulta</label>
+          <textarea 
+            rows="5" 
+            placeholder="Describe detalladamente los síntomas que presenta el estudiante..."
+            [(ngModel)]="atencionData.sintomas"
+            class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500"></textarea>
+        </div>
+  
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Diagnóstico Preliminar (CIE-10 si aplica)</label>
+          <textarea 
+            rows="4" 
+            placeholder="Ingresa el diagnóstico o evaluación médica preliminar..."
+            [(ngModel)]="atencionData.diagnostico"
+            class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500"></textarea>
+        </div>
+      </div>
+  
+      <div class="border-t border-gray-200"></div>
+  
+      <div class="space-y-8">
+        <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-4 border-b pb-4">
+          <i class="fa-solid fa-kit-medical text-purple-600 text-2xl"></i>
+          Tratamiento y Plan de Acción
+        </h2>
+  
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Recomendaciones / Plan de Acción</label>
+          <textarea 
+            rows="4" 
+            placeholder="Describe las indicaciones, el tiempo de reposo sugerido, o la derivación médica si es necesaria..."
+            [(ngModel)]="atencionData.recomendaciones"
+            class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500"></textarea>
+        </div>
+        
+        <div class="bg-purple-50 rounded-2xl p-6 border border-purple-200">
+          <h3 class="text-xl font-bold text-purple-800 mb-5 flex items-center gap-3">
+            <i class="fa-solid fa-pills text-purple-600 text-lg"></i>
+            Medicamentos Entregados (Descargo de Stock)
+          </h3>
+          
+          <div *ngFor="let medicamento of medicamentosEntregados; let i = index" class="bg-white rounded-xl p-5 mb-5 shadow-sm border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div class="md:col-span-2 relative">
+                <label class="block text-sm font-bold text-gray-600 mb-1">Medicamento (Stock: {{ medicamento.stock_disponible || 'N/A' }})</label>
+                <input 
+                  type="text" 
+                  placeholder="Ej: Paracetamol"
+                  [(ngModel)]="medicamento.nombre"
+                  (ngModelChange)="buscarMedicamentos(medicamento.nombre, i)"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                <ul 
+                *ngIf="medicamento.nombre && medicamentosDisponiblesMap[i] && medicamentosDisponiblesMap[i].length > 0" 
+                class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg"
+                >
+                <li 
+                *ngFor="let disp of medicamentosDisponiblesMap[i]"
+                (click)="seleccionarMedicamento(disp, i)"
+                class="px-4 py-2 cursor-pointer hover:bg-purple-100 text-gray-800 text-sm"
+                >
+                {{ disp.nombre_producto }} (Stock: {{ disp.cantidad_total }})
+              </li>
+            </ul>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Cantidad Entregada</label>
+                <input 
+                  type="number" 
+                  min="1"
+                  [(ngModel)]="medicamento.cantidad"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Dosis / Frecuencia</label>
+                <input 
+                  type="text" 
+                  placeholder="Ej: 1 pastilla cada 8h"
+                  [(ngModel)]="medicamento.dosis"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+              </div>
+            </div>
+            <div class="flex justify-end pt-4 mt-4 border-t border-gray-100">
+              <button 
+                *ngIf="medicamentosEntregados.length > 1"
+                (click)="eliminarMedicamento(i)"
+                class="text-red-600 text-base hover:text-red-700 transition duration-200 flex items-center gap-1 font-semibold"
+              >
+                <i class="fa-solid fa-trash-can"></i> Eliminar Medicamento
+              </button>
+            </div>
+          </div>
+  
+          <button
+            (click)="agregarMedicamento()"
+            class="w-full border-2 border-dashed border-purple-400 rounded-xl py-4 text-purple-700 hover:border-purple-600 hover:text-purple-800 transition duration-200 mt-3 font-extrabold text-base">
+            <i class="fa-solid fa-circle-plus mr-2"></i> Agregar otro medicamento a la lista
+          </button>
+        </div>
+  
+        <div>
+          <label class="block text-base font-bold text-gray-700 mb-2">Observaciones / Notas para Apoderado</label>
+          <textarea 
+            rows="4" 
+            placeholder="Cualquier nota adicional, alerta, o seguimiento requerido para ser informado a los padres/apoderados..."
+            [(ngModel)]="atencionData.observaciones"
+            class="w-full border border-gray-300 rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500"></textarea>
+        </div>
+      </div>
+  
+      <div class="flex justify-between gap-5 pt-8 border-t border-gray-200">
+        <button
+        (click)="limpiarFormulario(); mostrarAlertaLimpieza();"
+        class="flex items-center gap-2 border-2 border-gray-300 hover:bg-gray-100 text-gray-700 px-8 py-3.5 rounded-xl font-bold transition duration-200 text-lg"> 
+        <i class="fa-solid fa-rotate-left"></i> Limpiar Formulario
+      </button>
+        
+        <button
+          (click)="registrarAtencion()"
+          [disabled]="!estudianteSeleccionado || isSaving"
+          class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-10 py-3.5 rounded-xl font-extrabold transition duration-200 text-lg shadow-xl shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-cloud-arrow-up"></i> {{ isSaving ? 'Guardando...' : 'Registrar y Guardar Atención' }}
+        </button>
+      </div>
+      
+    </div>
+  </div>
