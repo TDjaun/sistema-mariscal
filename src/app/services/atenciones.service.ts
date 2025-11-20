@@ -11,7 +11,7 @@ interface MedicamentoEntregado {
 }
 
 interface Estudiante {
-  id: string;
+  id: string;            
   dni: string;
   nombres: string;
   apellidos: string;
